@@ -57,7 +57,7 @@ def vhs_filter(w: int, h: int, *, font: str | Path, work_dir: Path, osd_text: st
     if date_text:
         date_f = work_dir / "osd_date.txt"
         date_f.write_text(date_text, encoding="utf-8")
-        chain.append(f"drawtext=fontfile={esc(font)}:textfile={esc(date_f)}:x=w-tw-{pad_x}:y=h-th-{int(pad_y * 1.2)}:"
+        chain.append(f"drawtext=fontfile={esc(font)}:textfile={esc(date_f)}:x=w-tw-{pad_x}:y={pad_y}:"
                      f"fontsize={int(fs * 0.9)}:fontcolor=white@0.85:shadowcolor=black@0.6:shadowx=3:shadowy=3")
     chain.append("format=yuv420p")
     return ",".join(chain)
