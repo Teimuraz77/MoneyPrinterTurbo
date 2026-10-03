@@ -1,0 +1,7 @@
+# Alternative to the systemd timers (crontab -e as the wwnn user). Times are Europe/Berlin.
+CRON_TZ=Europe/Berlin
+# daily ingest
+0 7 * * *  cd /opt/wwnn && set -a && . ./.env && set +a && .venv/bin/wwnn ingest >> /srv/wwnn/data/logs/cron.log 2>&1
+# Sunday 09:00: create this week's run and push the 5 + 3 story selection to Telegram
+0 9 * * 0  cd /opt/wwnn && set -a && . ./.env && set +a && .venv/bin/wwnn week >> /srv/wwnn/data/logs/cron.log 2>&1
+# the orchestrator loop must still run continuously (systemd service, or: @reboot ... wwnn loop)

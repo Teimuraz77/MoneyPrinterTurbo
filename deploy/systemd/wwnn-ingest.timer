@@ -1,0 +1,9 @@
+[Unit]
+Description=WWNN daily ingest (builds the candidate pool for Sunday)
+
+[Timer]
+OnCalendar=*-*-* 07:00:00 Europe/Berlin
+Persistent=true
+
+[Install]
+WantedBy=timers.target
