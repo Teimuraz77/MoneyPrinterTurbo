@@ -1,0 +1,10 @@
+[Unit]
+Description=WWNN weekly run every Sunday morning (Berlin time)
+
+[Timer]
+OnCalendar=Sun *-*-* 09:00:00 Europe/Berlin
+Persistent=true
+RandomizedDelaySec=120
+
+[Install]
+WantedBy=timers.target

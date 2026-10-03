@@ -1,0 +1,10 @@
+# Alternative to the systemd timers (crontab -e as the wwnn user). Times are Europe/Berlin.
+# wwnn reads /opt/wwnn/.env itself (WWNN_ENV_FILE); do NOT `source` .env in a shell, because
+# several values contain spaces.
+CRON_TZ=Europe/Berlin
+WWNN_ENV_FILE=/opt/wwnn/.env
+# daily ingest
+0 7 * * *  cd /opt/wwnn && .venv/bin/wwnn ingest >> /srv/wwnn/data/logs/cron.log 2>&1
+# Sunday 09:00: create this week's run and push the 5 + 3 story selection to Telegram
+0 9 * * 0  cd /opt/wwnn && .venv/bin/wwnn week >> /srv/wwnn/data/logs/cron.log 2>&1
+# the orchestrator loop must still run continuously (systemd service, or: @reboot ... wwnn loop)

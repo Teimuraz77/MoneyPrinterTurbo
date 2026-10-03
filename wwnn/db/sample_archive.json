@@ -1,0 +1,82 @@
+{
+  "_comment": "SAMPLE DATA ONLY. These items are well-known historical curiosities written from memory as placeholders so the pipeline can run. They are marked is_sample=1 and verified_by='SAMPLE - NOT VERIFIED'. Check every fact against a primary source (or replace with your own vetted items via `wwnn archive import`) before anything is broadcast.",
+  "items": [
+    {
+      "slug": "sample-1957-spaghetti-harvest",
+      "title": "Swiss families harvest spaghetti from trees",
+      "summary": "On 1 April 1957 the BBC current-affairs programme Panorama broadcast a three-minute report showing a family in Ticino, Switzerland, picking strands of spaghetti from trees. The report credited a mild winter and the elimination of the spaghetti weevil for a bumper crop. A number of viewers contacted the BBC afterwards asking how to grow their own spaghetti tree.",
+      "event_date": "1957-04-01",
+      "place": "Ticino, Switzerland (as broadcast by the BBC)",
+      "source_citation": "BBC Panorama, 1 April 1957 (SAMPLE - verify)",
+      "rights_note": "Facts only; no archive footage used",
+      "tags": ["hoax", "food", "television"],
+      "absurdity": 9
+    },
+    {
+      "slug": "sample-1835-great-moon-hoax",
+      "title": "Newspaper reports bat-winged people living on the Moon",
+      "summary": "In August 1835 the New York Sun published a series of articles claiming that an astronomer had observed life on the Moon through a powerful new telescope, including bison, single-horned goats and winged humanoids. The series was a fabrication. The newspaper's circulation reportedly rose considerably while it ran.",
+      "event_date": "1835-08-25",
+      "place": "New York, USA",
+      "source_citation": "The Sun (New York), 25-31 August 1835 (SAMPLE - verify)",
+      "rights_note": "Public domain (pre-1900)",
+      "tags": ["hoax", "astronomy", "newspapers"],
+      "absurdity": 9
+    },
+    {
+      "slug": "sample-1859-emperor-norton",
+      "title": "San Francisco man proclaims himself Emperor of the United States",
+      "summary": "In September 1859 a San Francisco resident, Joshua Abraham Norton, sent a proclamation to local newspapers declaring himself Emperor of the United States. One newspaper printed it. For years afterwards he issued decrees, including one ordering the dissolution of Congress, and local businesses accepted the banknotes he printed in his own name.",
+      "event_date": "1859-09-17",
+      "place": "San Francisco, USA",
+      "source_citation": "San Francisco Daily Evening Bulletin, 17 September 1859 (SAMPLE - verify)",
+      "rights_note": "Public domain (pre-1900)",
+      "tags": ["politics", "eccentrics"],
+      "absurdity": 8
+    },
+    {
+      "slug": "sample-1876-kentucky-meat-shower",
+      "title": "Flakes of meat fall from a clear sky in Kentucky",
+      "summary": "In March 1876 residents of Bath County, Kentucky, reported that pieces of what appeared to be meat had fallen from a clear sky over a field for several minutes. Samples were examined by several scientists, who disagreed about what it was. The most popular later explanation involved birds and is not suitable for a family programme.",
+      "event_date": "1876-03-03",
+      "place": "Bath County, Kentucky, USA",
+      "source_citation": "Scientific American, 1876 (SAMPLE - verify)",
+      "rights_note": "Public domain (pre-1900)",
+      "tags": ["weather", "science"],
+      "absurdity": 9
+    },
+    {
+      "slug": "sample-1869-cardiff-giant",
+      "title": "Farmers dig up a ten-foot 'petrified man' and charge admission",
+      "summary": "In October 1869 workers digging a well on a farm near Cardiff, New York, uncovered a ten-foot stone figure of a man. It was exhibited to paying crowds as a petrified giant. It had in fact been carved from gypsum on the instructions of a tobacconist and buried a year earlier. A showman later exhibited an unauthorised copy of the fake, which also drew paying crowds.",
+      "event_date": "1869-10-16",
+      "place": "Cardiff, New York, USA",
+      "source_citation": "Syracuse Daily Journal, October 1869 (SAMPLE - verify)",
+      "rights_note": "Public domain (pre-1900)",
+      "tags": ["hoax", "archaeology", "showbusiness"],
+      "absurdity": 8
+    },
+    {
+      "slug": "sample-1962-tanganyika-laughter",
+      "title": "Outbreak of laughter closes schools in Tanganyika",
+      "summary": "In January 1962 a bout of uncontrollable laughter began among pupils at a girls' boarding school in Kashasha, Tanganyika, and spread to nearby villages. Several schools closed temporarily. Researchers later described it as an episode of mass psychogenic illness.",
+      "event_date": "1962-01-30",
+      "place": "Kashasha, Tanganyika (now Tanzania)",
+      "source_citation": "Central African Journal of Medicine, 1963 (SAMPLE - verify)",
+      "rights_note": "Facts only",
+      "tags": ["schools", "medicine"],
+      "absurdity": 7
+    },
+    {
+      "slug": "sample-1637-tulip-prices",
+      "title": "Single tulip bulbs offered for the price of a house",
+      "summary": "During the winter of 1636 to 1637, prices for certain rare tulip bulbs in the Dutch Republic rose so high that individual bulbs were reportedly offered for sums comparable to a canal house. In February 1637 the market abruptly stopped functioning, leaving many contracts unpaid.",
+      "event_date": "1637-02-03",
+      "place": "Haarlem, Dutch Republic",
+      "source_citation": "Contemporary pamphlets, 1637 (SAMPLE - verify)",
+      "rights_note": "Public domain",
+      "tags": ["economics", "flowers"],
+      "absurdity": 7
+    }
+  ]
+}

@@ -1,0 +1,9 @@
+[Unit]
+Description=WWNN weekly run: ingest + Telegram story selection push
+
+[Service]
+Type=oneshot
+User=wwnn
+WorkingDirectory=/opt/wwnn
+Environment=WWNN_ENV_FILE=/opt/wwnn/.env
+ExecStart=/opt/wwnn/.venv/bin/wwnn week

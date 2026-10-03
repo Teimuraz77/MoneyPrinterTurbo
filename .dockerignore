@@ -28,3 +28,11 @@ logs/
 
 storage/
 config.toml
+
+# WWNN runtime data, secrets and media never go into images (mounted at runtime instead)
+data/
+runs/
+models/
+secrets/
+assets/
+tests/

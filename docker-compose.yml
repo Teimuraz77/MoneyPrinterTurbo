@@ -1,24 +1,101 @@
-x-common-volumes: &common-volumes
-  - ./:/MoneyPrinterTurbo
+# WWNN on a single GPU server (e.g. Hetzner GPU, Ubuntu 22.04/24.04 + nvidia-container-toolkit).
+#
+# Long-running: ollama, bot.     Jobs (profile "jobs", started by the host orchestrator with
+# `docker compose run --rm <service> ...`): tts, longcat, compose.
+#
+# Data and assets are mounted at the SAME absolute path inside every container so the paths the
+# host orchestrator writes into job files work everywhere.
+
+x-gpu: &gpu
+  deploy:
+    resources:
+      reservations:
+        devices:
+          - driver: nvidia
+            count: all
+            capabilities: [gpu]
+
+x-common: &common
+  env_file: [.env]
+  environment:
+    WWNN_DATA_DIR: ${WWNN_DATA_DIR:-/srv/wwnn/data}
+    WWNN_ASSETS_DIR: ${WWNN_ASSETS_DIR:-/srv/wwnn/assets}
+    WWNN_STAGE_RUNNER: local          # inside a container, stages run in-process
+    WWNN_DRY_RUN: ${WWNN_DRY_RUN:-0}
+    TZ: Europe/Berlin
 
 services:
-  webui:
+  ollama:
+    image: ${OLLAMA_IMAGE:-ollama/ollama:latest}     # pin a tag/digest in .env for reproducible builds
+    <<: *gpu
+    environment:
+      OLLAMA_MAX_LOADED_MODELS: "1"
+      OLLAMA_KEEP_ALIVE: "0"           # free VRAM right after each call (TTS/LongCat need it)
+    volumes:
+      - ${WWNN_MODELS_DIR:-/srv/wwnn/models}/ollama:/root/.ollama
+    ports:
+      - "127.0.0.1:11434:11434"        # host-only; never expose Ollama publicly
+    restart: unless-stopped
+
+  bot:
+    build: { context: ., dockerfile: docker/app.Dockerfile }
+    image: wwnn-app:latest
+    <<: *common
+    command: ["python", "-m", "wwnn", "bot"]
+    volumes:
+      - ${WWNN_DATA_DIR:-/srv/wwnn/data}:${WWNN_DATA_DIR:-/srv/wwnn/data}
+    restart: unless-stopped
+
+  compose:
+    profiles: [jobs]
+    image: wwnn-app:latest
+    build: { context: ., dockerfile: docker/app.Dockerfile, args: { EXTRAS: "bot,upload,whisper" } }
+    <<: *common
+    volumes:
+      - ${WWNN_DATA_DIR:-/srv/wwnn/data}:${WWNN_DATA_DIR:-/srv/wwnn/data}
+      - ${WWNN_ASSETS_DIR:-/srv/wwnn/assets}:${WWNN_ASSETS_DIR:-/srv/wwnn/assets}:ro
+      - ${WWNN_MODELS_DIR:-/srv/wwnn/models}/hf:/root/.cache/huggingface
+
+  tts:
+    profiles: [jobs]
     build:
       context: .
-      dockerfile: Dockerfile
-    container_name: "moneyprinterturbo-webui"
-    ports:
-      - "127.0.0.1:8501:8501"
-    command: [ "streamlit", "run", "./webui/Main.py", "--server.address=0.0.0.0", "--server.port=8501", "--browser.serverAddress=127.0.0.1", "--server.enableCORS=True", "--browser.gatherUsageStats=False", "--client.toolbarMode=minimal", "--logger.hideWelcomeMessage=True", "--server.showEmailPrompt=False" ]
-    volumes: *common-volumes
-    restart: always
-  api:
+      dockerfile: docker/tts.Dockerfile
+      args:
+        BASE_IMAGE: ${TTS_BASE_IMAGE:-pytorch/pytorch:2.6.0-cuda12.4-cudnn9-runtime}
+        TORCH_OVERRIDE: ${TTS_TORCH_OVERRIDE:-}
+    image: wwnn-tts:latest
+    <<: [*common, *gpu]
+    volumes:
+      - ${WWNN_DATA_DIR:-/srv/wwnn/data}:${WWNN_DATA_DIR:-/srv/wwnn/data}
+      - ${WWNN_ASSETS_DIR:-/srv/wwnn/assets}:${WWNN_ASSETS_DIR:-/srv/wwnn/assets}:ro
+      - ${WWNN_MODELS_DIR:-/srv/wwnn/models}/hf:/root/.cache/huggingface
+
+  longcat:
+    profiles: [jobs]
     build:
       context: .
-      dockerfile: Dockerfile
-    container_name: "moneyprinterturbo-api"
-    ports:
-      - "127.0.0.1:8080:8080"
-    command: [ "python3", "main.py" ]
-    volumes: *common-volumes
-    restart: always
+      dockerfile: docker/longcat.Dockerfile
+      args:
+        WITH_LOWMEM_PR: ${LONGCAT_WITH_LOWMEM_PR:-0}   # 1 = include PR #115 script for 24 GB cards
+        CUDA_IMAGE: ${LONGCAT_CUDA_IMAGE:-nvidia/cuda:12.4.1-cudnn-devel-ubuntu22.04}
+        TORCH_VERSION: ${LONGCAT_TORCH_VERSION:-2.6.0}
+        TORCHVISION_VERSION: ${LONGCAT_TORCHVISION_VERSION:-0.21.0}
+        TORCHAUDIO_VERSION: ${LONGCAT_TORCHAUDIO_VERSION:-2.6.0}
+        TORCH_INDEX: ${LONGCAT_TORCH_INDEX:-https://download.pytorch.org/whl/cu124}
+        TORCHAO_VERSION: ${LONGCAT_TORCHAO_VERSION:-0.10.0}
+    image: wwnn-longcat:latest
+    <<: [*common, *gpu]
+    shm_size: 16g
+    environment:
+      WWNN_DATA_DIR: ${WWNN_DATA_DIR:-/srv/wwnn/data}
+      WWNN_ASSETS_DIR: ${WWNN_ASSETS_DIR:-/srv/wwnn/assets}
+      WWNN_STAGE_RUNNER: local
+      LONGCAT_REPO_DIR: /opt/LongCat-Video
+      PYTORCH_CUDA_ALLOC_CONF: expandable_segments:True
+      TZ: Europe/Berlin
+    volumes:
+      - ${WWNN_DATA_DIR:-/srv/wwnn/data}:${WWNN_DATA_DIR:-/srv/wwnn/data}
+      - ${WWNN_ASSETS_DIR:-/srv/wwnn/assets}:${WWNN_ASSETS_DIR:-/srv/wwnn/assets}:ro
+      - ${WWNN_MODELS_DIR:-/srv/wwnn/models}/longcat:/models:ro
+      - ${WWNN_MODELS_DIR:-/srv/wwnn/models}/torch_cache:/root/.cache

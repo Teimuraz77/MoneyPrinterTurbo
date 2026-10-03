@@ -20,6 +20,8 @@ model_size = config.whisper.get("model_size", "large-v3")
 device = config.whisper.get("device", "cpu")
 compute_type = config.whisper.get("compute_type", "int8")
 initial_prompt = config.whisper.get("initial_prompt", "") or None
+# WWNN: force the transcription language (the show is English) instead of auto-detect.
+language = config.whisper.get("language", "") or None
 model = None
 _model_init_lock = threading.Lock()
 
@@ -78,6 +80,7 @@ def create(
     segments, info = model.transcribe(
         audio_file,
         beam_size=5,
+        language=language,
         word_timestamps=True,
         vad_filter=True,
         vad_parameters=dict(min_silence_duration_ms=500),

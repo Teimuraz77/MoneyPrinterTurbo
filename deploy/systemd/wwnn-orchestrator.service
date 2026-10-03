@@ -1,0 +1,18 @@
+[Unit]
+Description=WWNN orchestrator (advances weekly runs, launches GPU job containers)
+After=docker.service network-online.target
+Requires=docker.service
+
+[Service]
+Type=simple
+User=wwnn
+WorkingDirectory=/opt/wwnn
+Environment=WWNN_ENV_FILE=/opt/wwnn/.env
+Environment=WWNN_STAGE_RUNNER=docker
+Environment=WWNN_COMPOSE_FILE=/opt/wwnn/docker-compose.yml
+ExecStart=/opt/wwnn/.venv/bin/wwnn loop --interval 30
+Restart=on-failure
+RestartSec=30
+
+[Install]
+WantedBy=multi-user.target
