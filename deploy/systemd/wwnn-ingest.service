@@ -5,5 +5,5 @@ Description=WWNN daily story ingest (RSS + NewsData.io, taboo screening)
 Type=oneshot
 User=wwnn
 WorkingDirectory=/opt/wwnn
-EnvironmentFile=/opt/wwnn/.env
+Environment=WWNN_ENV_FILE=/opt/wwnn/.env
 ExecStart=/opt/wwnn/.venv/bin/wwnn ingest
