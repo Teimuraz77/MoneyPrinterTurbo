@@ -58,7 +58,12 @@ services:
 
   tts:
     profiles: [jobs]
-    build: { context: ., dockerfile: docker/tts.Dockerfile }
+    build:
+      context: .
+      dockerfile: docker/tts.Dockerfile
+      args:
+        BASE_IMAGE: ${TTS_BASE_IMAGE:-pytorch/pytorch:2.6.0-cuda12.4-cudnn9-runtime}
+        TORCH_OVERRIDE: ${TTS_TORCH_OVERRIDE:-}
     image: wwnn-tts:latest
     <<: [*common, *gpu]
     volumes:
@@ -73,6 +78,12 @@ services:
       dockerfile: docker/longcat.Dockerfile
       args:
         WITH_LOWMEM_PR: ${LONGCAT_WITH_LOWMEM_PR:-0}   # 1 = include PR #115 script for 24 GB cards
+        CUDA_IMAGE: ${LONGCAT_CUDA_IMAGE:-nvidia/cuda:12.4.1-cudnn-devel-ubuntu22.04}
+        TORCH_VERSION: ${LONGCAT_TORCH_VERSION:-2.6.0}
+        TORCHVISION_VERSION: ${LONGCAT_TORCHVISION_VERSION:-0.21.0}
+        TORCHAUDIO_VERSION: ${LONGCAT_TORCHAUDIO_VERSION:-2.6.0}
+        TORCH_INDEX: ${LONGCAT_TORCH_INDEX:-https://download.pytorch.org/whl/cu124}
+        TORCHAO_VERSION: ${LONGCAT_TORCHAO_VERSION:-0.10.0}
     image: wwnn-longcat:latest
     <<: [*common, *gpu]
     shm_size: 16g
