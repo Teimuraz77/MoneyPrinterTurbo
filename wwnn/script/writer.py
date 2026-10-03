@@ -135,7 +135,9 @@ def write_episode(backend, settings: Settings, live: list[dict], archive: list[d
         if not problems:
             break
         if ann_s > budget.annika_cap_s:
-            annika_target_s = max(20.0, annika_target_s - (ann_s - budget.annika_cap_s) - 4)
+            if len(annika_items) > 1 and ann_s - budget.annika_cap_s > 6:
+                annika_items = annika_items[:-1]                          # give the extra story back
+            annika_target_s = max(15.0, annika_target_s - (ann_s - budget.annika_cap_s) - 4)
         if total < settings.video_a_min_s:
             gap = settings.video_a_min_s - total
             headroom = budget.annika_cap_s - ann_s

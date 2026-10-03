@@ -74,6 +74,8 @@ class Settings:
     telegram_bot_token: str = ""
     telegram_chat_id: str = ""
     telegram_allowed_user_ids: str = ""    # comma separated numeric ids
+    telegram_in_dry_run: bool = False      # dry runs normally write to data/telegram_outbox.jsonl
+    auto_approve: bool = False             # dry-run/testing only: auto-answer both Telegram gates
     selection_deadline_hours: float = 30.0
     approval_reminder_hours: float = 24.0
 
@@ -220,7 +222,11 @@ class Settings:
     def path(self, p: str | Path) -> Path:
         """Resolve a possibly relative asset/secret path against ``home``."""
         p = Path(p)
-        return p if p.is_absolute() else self.home / p
+        if p.is_absolute():
+            return p
+        if p.parts and p.parts[0] == "assets":           # assets may live outside the repo
+            return self.assets_dir.joinpath(*p.parts[1:])
+        return self.home / p
 
     @property
     def runs_dir(self) -> Path:
