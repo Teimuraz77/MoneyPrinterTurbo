@@ -34,3 +34,8 @@ assets/PLACEHOLDERS.json
 .DS_Store
 .idea/
 .vscode/
+
+# packaging
+build/
+dist/
+*.egg-info/
